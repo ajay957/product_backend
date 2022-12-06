@@ -1,34 +1,38 @@
 package com.example.product_backend.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.product_backend.dao.ProductDao;
+import com.example.product_backend.model.Product;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class ProductController {
+    @Autowired
+    private ProductDao dao;
     @GetMapping("/")
     public String HomePage(){
         return "welcome to product home page";
     }
-    @PostMapping("/add")
-    public String ProductAdd(){
-        return "welcome to add product page";
+    @CrossOrigin("*")
+    @PostMapping(path = "/add",consumes = "application/json",produces = "application/json")
+    public String ProductAdd(@RequestBody Product p){
+        System.out.println(p.getProductCode());
+        System.out.println(p.getProductName().toString());
+        System.out.println(p.getManuDate().toString());
+        System.out.println(p.getExpDate().toString());
+        System.out.println(p.getBrand().toString());
+        System.out.println(p.getPrice());
+        System.out.println(p.getSellName().toString());
+        System.out.println(p.getDisName().toString());
+        dao.save(p);
+        return "product added successfully";
     }
-    @PostMapping("/search")
-    public String ProductSearch(){
-        return "welcome to product search page";
-    }
-    @PostMapping("/edit")
-    public String ProductEdit(){
-        return "welcome to product edit page";
-    }
+    @CrossOrigin(origins = "*")
     @GetMapping("/view")
-    public String ProductView(){
-        return "welcome to view product page";
-    }
-    @PostMapping("/delete")
-    public String ProductDelete(){
-        return "welcome to product delete page";
-    }
 
+    public List<Product> viewAll(){
+        return(List<Product>) dao.findAll();
+    }
 }
